@@ -1,5 +1,12 @@
 ## Использование
 
+### Создание полу-виртуальной среды
+
+Для создания проекта AltPIP:
+```
+altpip create [name]
+```
+
 ### Установка/удаление пакетов
 
 Аналогичен PIP:
@@ -44,8 +51,9 @@ import sys, os
 sys.path.append(os.path.join(os.path.expanduser("~"), '.apipenv/libs'))
 ```
 
-##
+## GitHub
+[тут](https://github.com/nesquikcode/altpip)
 
 ## Поддержка
 
-Если есть желание - [поддержите монеткой](https://www.donationalerts.com/r/nesquickly) •⩊•]
+Если есть желание - [поддержите монеткой](https://www.donationalerts.com/r/nesquickly) •⩊•
