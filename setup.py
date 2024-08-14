@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os, json
 
-_version = "0.1.4"
+_version = "0.1.5"
 hdir = os.path.expanduser("~")
 if ".apipenv" not in os.listdir(hdir):
     os.mkdir(os.path.join(hdir, '.apipenv'))
