@@ -51,8 +51,8 @@ import sys, os
 sys.path.append(os.path.join(os.path.expanduser("~"), '.apipenv/libs'))
 ```
 
-## GitHub
-[тут](https://github.com/nesquikcode/altpip)
+## PyPI
+[AltPIP на pypi.org](https://pypi.org/project/altpip/)
 
 ## Поддержка
 
