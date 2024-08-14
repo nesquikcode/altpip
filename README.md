@@ -1,4 +1,3 @@
-
 ## Использование
 
 ### Установка/удаление пакетов
@@ -49,4 +48,4 @@ sys.path.append(os.path.join(os.path.expanduser("~"), '.apipenv/libs'))
 
 ## Поддержка
 
-Если есть желание - [поддержите монеткой](https://www.donationalerts.com/r/nesquickly) •⩊•
+Если есть желание - [поддержите монеткой](https://www.donationalerts.com/r/nesquickly) •⩊•]
