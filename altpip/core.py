@@ -24,6 +24,35 @@ class AltPIP:
         self.cfgpath = os.path.join(os.path.expanduser("~"), '.apipenv', 'config.json') if '.apipenv' not in os.listdir(self.workdir) else os.path.join(self.workdir, '.apipenv', 'config.json')
         self.cfg = json.load(open(self.cfgpath, encoding='utf-8'))
 
+    def __postprocess(self):
+        """
+        Дополнительная обработка после установки пакетов.
+        """
+
+        libs = {}
+
+        alls = os.listdir(self.libdir)
+        alls2 = alls.copy()
+
+        for x in alls2:
+            if x == "bin":
+                alls.remove(x)
+            elif "-" not in x:
+                libs[x] = ""
+                alls.remove(x)
+
+        for x in libs.keys():
+
+            if x not in self.cfg['libs']:
+                self.cfg['libs'][x] = []
+
+        for x in self.cfg['libs'].keys():
+
+            if x not in libs.keys():
+                del self.cfg['libs'][x]
+
+        with open(self.cfgpath, "w") as f: json.dump(self.cfg, f)
+
     def install(self, libs: list, console_output: bool = True):
 
         """
@@ -34,7 +63,7 @@ class AltPIP:
 
             tempdir = generate(32)
             os.mkdir(os.path.join(self.libdir, tempdir))
-            subprocess.call(f"pip install {x} --target {os.path.join(self.libdir, tempdir)}".split(), stdout=subprocess.PIPE)
+            subprocess.call(f"pip install {x} --target {os.path.join(self.libdir, tempdir)} -q".split(), stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
             self.cfg['libs'][x] = os.listdir(os.path.join(self.libdir, tempdir))
             shutil.copytree(os.path.join(self.libdir, tempdir), self.libdir, dirs_exist_ok=True)
             shutil.rmtree(os.path.join(self.libdir, tempdir))
@@ -42,11 +71,20 @@ class AltPIP:
         with open(self.cfgpath, "w") as f:
             json.dump(self.cfg, f)
 
+        self.__postprocess()
+
     def uninstall(self, libs: list, console_output: bool = True, ignore_inputs: bool = False):
 
         """
         Удаление пакетов.
         """
+
+        l2 = libs.copy()
+        for x in l2:
+            if x not in self.cfg['libs']:
+                print(f"WARN: Пропускаем {x} (не установлено).")
+                libs.remove(x)
+
 
         for x in tqdm(libs) if console_output else libs:
             
@@ -65,7 +103,7 @@ class AltPIP:
                 for x2, y in warnslist.items():
                     tmp += f"{x2} - {', '.join(y)}\n"
                 
-                if console_output: print(f"WARN: У {x} есть пересечение с другими библиотеками по зависимостям: {tmp}.")
+                if console_output: print(f" WARN: У {x} есть пересечение с другими библиотеками по зависимостям: {tmp}.")
 
                 i = "" if console_output else "o"
                 while i not in ['o', 'O', 'о', 'О', 'a', 'A', 'а', 'А']:
@@ -110,7 +148,8 @@ class AltPIP:
                         if console_output: print(f"WARN: Ошибка при удалении {y} - библиотека не найдена.")
             del self.cfg['libs'][x]
 
-        with open(self.cfgpath, "w") as f: json.dump(self.cfg)
+        with open(self.cfgpath, "w") as f: json.dump(self.cfg, f)
+        self.__postprocess()
         if console_output: print("DONE: Удаление завершено.")
 
     def listpackages(self):
