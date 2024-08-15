@@ -257,6 +257,8 @@ def main(args):
         else: print("Вы пока что не устанавливали пакетов.")
     elif args[1] == "create":
         ap.create(args[2], args[3:])
+    elif args[1] == "fix":
+        ap.fix()
     elif args[1] == "help":
         print("""
 Использование:
