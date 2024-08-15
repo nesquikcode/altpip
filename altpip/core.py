@@ -18,9 +18,10 @@ class AltPIP:
         self.lastdir = ""
         self.lastlibdir = ""
         self.workdir = os.getcwd()
+        self.apipenvdir = os.path.join(os.path.expanduser("~"), '.apipenv') if '.apipenv' not in os.listdir(self.workdir) else os.path.join(self.workdir, '.apipenv')
         self.libdir = os.path.join(os.path.expanduser("~"), '.apipenv', 'libs') if '.apipenv' not in os.listdir(self.workdir) else os.path.join(self.workdir, '.apipenv', 'libs')
         self.cfgpath = os.path.join(os.path.expanduser("~"), '.apipenv', 'config.json') if '.apipenv' not in os.listdir(self.workdir) else os.path.join(self.workdir, '.apipenv', 'config.json')
-        self.cfg = json.load(open(self.cfgpath, encoding='utf-8'))
+        self.cfg = json.load(open(self.cfgpath, encoding='utf-8')) if "TERMUX_VERSION" not in os.environ else {"libs" : [], "altpip-version" : _version}
 
     def __postprocess(self):
         """
@@ -201,6 +202,37 @@ sys.path.append('.apipenv/libs')
 
 # Your code here / Ваш код здесь
 """)
+
+    def fix(self):
+
+        try: 
+            if "libs" in os.listdir(self.apipenvdir) and "config.json" in os.listdir(self.apipenvdir):
+                print("С текущей установкой AltPIP всё в порядке.")
+            else:
+                print("Установка AltPIP повреждена. Переустанавливаем...")
+                if ".apipenv" not in os.listdir(os.path.join(self.apipenvdir, os.pardir)):
+                    os.mkdir(self.apipenvdir)
+                    os.mkdir(os.path.join(self.apipenvdir, 'libs'))
+                    json.dump({"libs" : {}, "altpip-version" : _version}, open(self.cfgpath, "x"))
+                else:
+                    shutil.rmtree(self.apipenvdir)
+                    os.mkdir(self.apipenvdir)
+                    os.mkdir(os.path.join(self.apipenvdir, 'libs'))
+                    json.dump({"libs" : {}, "altpip-version" : _version}, open(self.cfgpath, "x"))
+                print("Переустановка завершена. Если AltPIP всё ещё работает некорректно - обратитесь за помощью на GitHUb: https://github.com/nesquikcode/altpip.")
+        except:
+            print("Установка AltPIP повреждена. Переустанавливаем...")
+            if ".apipenv" not in os.listdir(os.path.join(self.apipenvdir, os.pardir)):
+                os.mkdir(self.apipenvdir)
+                os.mkdir(os.path.join(self.apipenvdir, 'libs'))
+                json.dump({"libs" : {}, "altpip-version" : _version}, open(self.cfgpath, "x"))
+            else:
+                shutil.rmtree(self.apipenvdir)
+                os.mkdir(self.apipenvdir)
+                os.mkdir(os.path.join(self.apipenvdir, 'libs'))
+                json.dump({"libs" : {}, "altpip-version" : _version}, open(self.cfgpath, "x"))
+            print("Переустановка завершена. Если AltPIP всё ещё работает некорректно - обратитесь за помощью на GitHUb: https://github.com/nesquikcode/altpip.")
+
 
 
 

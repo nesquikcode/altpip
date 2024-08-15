@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os, json
 
-_version = "0.1.6"
+_version = "0.1.7"
 hdir = os.path.expanduser("~")
 if ".apipenv" not in os.listdir(hdir):
     os.mkdir(os.path.join(hdir, '.apipenv'))
@@ -16,6 +16,8 @@ else:
         config["altpip-version"] = _version
     
     with open(os.path.join(hdir, '.apipenv/config.json'), "w") as f: json.dump(config, f)
+if 'TERMUX_VERSION' in os.environ:
+    print("WARN: Termux не поддерживается полностью. Могут быть проблемы с доступам к файлам или с их отсутствием.")
 
 setup(
     name='altpip',
@@ -31,5 +33,8 @@ setup(
         'console_scripts': [
             'altpip=altpip:cli'
         ],
-    }
+    },
+    install_requires=[
+        'tqdm'
+    ]
 )
