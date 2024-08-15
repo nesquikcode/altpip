@@ -48,10 +48,3 @@ sys.path.insert(0, os.path.join(os.path.expanduser("~"), '.apipenv', 'libs'))
 ## Поддержка
 
 Если есть желание - [поддержите монеткой](https://www.donationalerts.com/r/nesquickly) •⩊•
-
-## GitHub
-[тут](https://github.com/nesquikcode/altpip)
-
-## Поддержка
-
-Если есть желание - [поддержите монеткой](https://www.donationalerts.com/r/nesquickly) •⩊•
