@@ -1,10 +1,8 @@
 
 import os
-import sys
 import json
 import subprocess
 import shutil
-import pkg_resources
 
 from tqdm import tqdm
 from .generator import generate
@@ -208,6 +206,10 @@ sys.path.append('.apipenv/libs')
 
 def main(args):
     
+    if len(args) == 1:
+        print("Команда не задана. Для получения списка команд используйте altpip help")
+        return 0
+
     ap = AltPIP()
     if args[1] == "install":
         ap.install(args[2:])
@@ -223,5 +225,17 @@ def main(args):
         else: print("Вы пока что не устанавливали пакетов.")
     elif args[1] == "create":
         ap.create(args[2], args[3:])
+    elif args[1] == "help":
+        print("""
+Использование:
+    altpip [command] [options]
+
+Команды:
+    install [package(-s)] - Установка пакетов из PyPI
+    uninstall [package(-s)] - Удаление пакетов
+    list - Просмтор установленных пакетов в формате requirements.txt
+    create [name] - Создание проекта altpip.
+    help - Вывод команд.
+""")
     else:
-        print("ERR: Неизвестная команда.")
+        print("Неизвестная команда. Для получения списка команд используйте altpip help")
