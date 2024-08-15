@@ -48,7 +48,7 @@ class AltPIP:
             if x not in self.cfg['libs']:
                 self.cfg['libs'][x] = []
 
-        for x in self.cfg['libs'].keys().copy():
+        for x in list(self.cfg['libs'].keys()).copy():
 
             if x not in libs.keys():
                 del self.cfg['libs'][x]
