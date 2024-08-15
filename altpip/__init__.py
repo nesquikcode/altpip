@@ -5,6 +5,6 @@ AltPIP is a tool for creating semi-virtual environments (like venv).
 """
 
 def cli():
-    import sys
     from . import core
+    import sys
     core.main(sys.argv)

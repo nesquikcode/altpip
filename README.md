@@ -1,4 +1,3 @@
-
 # Документация по AltPIP
 Внутренний API - [тут](https://github.com/nesquikcode/altpip/blob/main/InternalAPI.md)
 
@@ -44,6 +43,14 @@ altpip list
 import sys, os
 sys.path.insert(0, os.path.join(os.path.expanduser("~"), '.apipenv', 'libs'))
 ```
+
+## Поддержка
+
+Если есть желание - [поддержите монеткой](https://www.donationalerts.com/r/nesquickly) •⩊•
+```
+
+## GitHub
+[тут](https://github.com/nesquikcode/altpip)
 
 ## Поддержка
 

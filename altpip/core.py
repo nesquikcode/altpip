@@ -11,14 +11,17 @@ from ._version import _version
 class AltPIP:
     """
     Внутренний API для использования AltPIP в скриптах.
+
+    Примеры и документация на GitHub: https://github.com/nesquikcode/altpip
     """
 
     def __init__(self) -> None:
-        
+
         self.lastdir = ""
         self.lastlibdir = ""
         self.workdir = os.getcwd()
         self.apipenvdir = os.path.join(os.path.expanduser("~"), '.apipenv') if '.apipenv' not in os.listdir(self.workdir) else os.path.join(self.workdir, '.apipenv')
+        self.apipenvpath = os.path.expanduser("~") if '.apipenv' not in os.listdir(self.workdir) else self.workdir
         self.libdir = os.path.join(os.path.expanduser("~"), '.apipenv', 'libs') if '.apipenv' not in os.listdir(self.workdir) else os.path.join(self.workdir, '.apipenv', 'libs')
         self.cfgpath = os.path.join(os.path.expanduser("~"), '.apipenv', 'config.json') if '.apipenv' not in os.listdir(self.workdir) else os.path.join(self.workdir, '.apipenv', 'config.json')
         self.cfg = json.load(open(self.cfgpath, encoding='utf-8')) if "TERMUX_VERSION" not in os.environ else {"libs" : [], "altpip-version" : _version}
@@ -145,6 +148,16 @@ class AltPIP:
                         if y != "bin": shutil.rmtree(os.path.join(self.libdir, y))
                     except:
                         if console_output: print(f"WARN: Ошибка при удалении {y} - библиотека не найдена.")
+
+            else:
+
+                for y in self.cfg['libs'][x]:
+                    
+                    try:
+                        if y != "bin": shutil.rmtree(os.path.join(self.libdir, y))
+                    except:
+                        if console_output: print(f"WARN: Ошибка при удалении {y} - библиотека не найдена.")
+            
             del self.cfg['libs'][x]
 
         with open(self.cfgpath, "w") as f: json.dump(self.cfg, f)
@@ -159,7 +172,7 @@ class AltPIP:
 
         libs = {}
 
-        alls = os.listdir(self.libdir)
+        alls = [item.lower() for item in os.listdir(self.libdir)]
         alls2 = alls.copy()
 
         for x in alls2:
@@ -198,19 +211,18 @@ class AltPIP:
 # Проект создан и настроен. Приятного пользования!
 # Если вам нужно больше выполняемых файлов (.py) в проекте - скопируйте две строки ниже в каждый из файлов для правильной работы с пакетами
 import sys
-sys.path.append('.apipenv/libs')
+sys.path.insert(0, '.apipenv/libs')
 
 # Your code here / Ваш код здесь
 """)
 
     def fix(self):
-
         try: 
             if "libs" in os.listdir(self.apipenvdir) and "config.json" in os.listdir(self.apipenvdir):
                 print("С текущей установкой AltPIP всё в порядке.")
             else:
                 print("Установка AltPIP повреждена. Переустанавливаем...")
-                if ".apipenv" not in os.listdir(os.path.join(self.apipenvdir, os.pardir)):
+                if ".apipenv" not in os.listdir(os.path.join(self.apipenvpath)):
                     os.mkdir(self.apipenvdir)
                     os.mkdir(os.path.join(self.apipenvdir, 'libs'))
                     json.dump({"libs" : {}, "altpip-version" : _version}, open(self.cfgpath, "x"))
@@ -222,7 +234,7 @@ sys.path.append('.apipenv/libs')
                 print("Переустановка завершена. Если AltPIP всё ещё работает некорректно - обратитесь за помощью на GitHUb: https://github.com/nesquikcode/altpip.")
         except:
             print("Установка AltPIP повреждена. Переустанавливаем...")
-            if ".apipenv" not in os.listdir(os.path.join(self.apipenvdir, os.pardir)):
+            if ".apipenv" not in os.listdir(self.apipenvpath):
                 os.mkdir(self.apipenvdir)
                 os.mkdir(os.path.join(self.apipenvdir, 'libs'))
                 json.dump({"libs" : {}, "altpip-version" : _version}, open(self.cfgpath, "x"))
@@ -233,7 +245,14 @@ sys.path.append('.apipenv/libs')
                 json.dump({"libs" : {}, "altpip-version" : _version}, open(self.cfgpath, "x"))
             print("Переустановка завершена. Если AltPIP всё ещё работает некорректно - обратитесь за помощью на GitHUb: https://github.com/nesquikcode/altpip.")
 
+    def clean(self, ignore_inputs: bool = False, console_output: bool = True):
+        if not ignore_inputs: i = input(f"Вы действительно хотите удалить все библиотеки? ({self.libdir}) [Y]es/[N]o >")
+        else: i = "y"
+        if i in ["y", "Y"]:
 
+            shutil.rmtree(self.libdir)
+            os.mkdir(self.libdir)
+            json.dump({"libs" : {}, "altpip-version" : _version}, open(self.cfgpath, "w"))
 
 
 def main(args):
@@ -259,6 +278,8 @@ def main(args):
         ap.create(args[2], args[3:])
     elif args[1] == "fix":
         ap.fix()
+    elif args[1] == "clean":
+        ap.clean()
     elif args[1] == "help":
         print("""
 Использование:
@@ -270,6 +291,8 @@ def main(args):
     list - Просмтор установленных пакетов в формате requirements.txt
     create [name] - Создание проекта altpip.
     help - Вывод команд.
+    fix - Исправление внутренних неисправностей AltPIP. !-Experimental-!
+    clean - Удаление всех библиотек проекта/глобальных.
 """)
     else:
         print("Неизвестная команда. Для получения списка команд используйте altpip help")

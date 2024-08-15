@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os, json
 
-_version = "0.1.8"
+_version = "0.2.1"
 hdir = os.path.expanduser("~")
 if ".apipenv" not in os.listdir(hdir):
     os.mkdir(os.path.join(hdir, '.apipenv'))
@@ -17,7 +17,7 @@ else:
     
     with open(os.path.join(hdir, '.apipenv/config.json'), "w") as f: json.dump(config, f)
 if 'TERMUX_VERSION' in os.environ:
-    print("WARN: Termux не поддерживается полностью. Могут быть проблемы с доступам к файлам или с их отсутствием.")
+    print("WARN: Termux пока-что не поддерживается! AltPIP будет работать некорректно.")
 
 setup(
     name='altpip',
